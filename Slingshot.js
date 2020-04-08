@@ -3,8 +3,8 @@ class SlingShot {
         var options = {
             bodyA: bodyA,
             pointB: pointB,
-            stiffness: 1,
-            damping: 0.05,
+            // stiffness: 0.05,
+            // damping: 0.05,
             // render: {
             //     visible: true
             // }

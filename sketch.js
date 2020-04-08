@@ -13,6 +13,8 @@ var box1, box2, box3, box4, box5, box6, box7, box8, box9, box10, box11,
 var boxes;
 var rock1;
 var rocks = [];
+var score = 0;
+var rockNo;
 function setup() {
     canvas = createCanvas(800, 600);
     engine = Engine.create();
@@ -61,7 +63,7 @@ function setup() {
 
     box33 = new Box(x1, y2 - 150);
 
-    rock1 = new Rock(200, 200);
+    rock1 = new Rock(200, 200, Math.round(random(10, 60)));
     rocks.push(rock1);
     slingshotPosition = createVector(200, 200)
     slingshot = new SlingShot(rock1.body, { x: slingshotPosition.x, y: slingshotPosition.y });
@@ -72,17 +74,23 @@ function setup() {
 }
 
 function draw() {
+    rockNo = 6 - rocks.length;
     canvas.position((windowWidth - width) / 2, (windowHeight - height) / 2);
     background(0);
     noStroke();
     textSize(35)
     fill("white")
+
+    text("Score : " + score, width - 300, 50);
+    text("Rocks left : " + rockNo, width - 700, 50)
+
     Engine.update(engine);
     ground.display();
     base1.display();
     for (var box of boxes) {
         if (box !== undefined) {
             box.display();
+            box.score();
         }
     }
     for (var rock of rocks) {
@@ -94,6 +102,28 @@ function draw() {
 
     slingshot.display();
     // box2.display();
+    if (score === 330 && rockNo >= 1) {
+        push()
+        rectMode(CENTER)
+        fill(0)
+        rect(width / 2, height / 2, 400, 150);
+        fill(255)
+        textSize(50);
+        text("You Win", width / 2 - 90, height / 2 + 20);
+        pop()
+    }
+    if (rockNo < 1) {
+        push()
+        rectMode(CENTER)
+        fill(0)
+        rect(width / 2, height / 2, 400, 150);
+        fill(255)
+        textSize(50);
+        text("You Lose", width / 2 - 100, height / 2 + 20);
+        pop()
+    }
+
+
 }
 
 function mouseDragged() {
@@ -103,9 +133,20 @@ function mouseDragged() {
 
 function mouseReleased() {
     slingshot.fly();
-    slingshot.attach(createRock());
+    // for (var rock of rocks) {
+    //     alert("ok");
+
+    // if (rock.body.position.x === slingshotPosition.x && rock.body.position.y === slingshotPosition.y)
+
+    //     }
+    if (rockNo >= 0) {
+        setTimeout(newRock, 500);
+    }
 }
 
+function newRock() {
+    slingshot.attach(createRock());
+}
 // function keyPressed() {
 //     if (keyCode === 32) {
 
@@ -115,7 +156,7 @@ function mouseReleased() {
 // }
 function createRock() {
 
-    var newRock = new Rock(slingshotPosition.x, slingshotPosition.y);
+    var newRock = new Rock(slingshotPosition.x, slingshotPosition.y, Math.round(random(50, 60)));
     rocks.push(newRock);
     return (newRock.body)
 }
